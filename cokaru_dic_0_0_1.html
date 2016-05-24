@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>The Cokaru's Dictionary - The Game of Throne ~AWESOME</title>
+
+<style type="text/css">
+<!--
+HTML{
+scrollbar-face-color:#75EA00;
+scrollbar-arrow-color:brown;
+scrollbar-track-color:#EEEEEE;
+scrollbar-shadow-color:'';
+scrollbar-highlight-color:'';
+scrollbar-3dlight-color:'';
+scrollbar-darkshadow-Color:'';
+}
+-->
+
+html,body{
+	height:100%
+}
+</style>
+
+<script>
+
+var daum_dic_url ="http://dic.daum.net/search.do?q=";
+var oxford_dic_url ="http://www.oxforddictionaries.com/definition/english/";
+var bing_img_url = "http://www.bing.com/images/search?q=";	
+
+function OnFindIt(frm)
+{	
+	var query = bing_img_url+frm.englishWord.value; 
+	document.getElementById('bing_image').src = query;		
+
+	query = daum_dic_url;
+	query += frm.englishWord.value;		
+	query += "&dic=eng&search_first=N";
+	document.getElementById('daum_dic').src = query;				
+
+	query = oxford_dic_url;
+	query += frm.englishWord.value;		
+	document.getElementById('oxford_dic').src = query;		
+}
+</script>
+</head>
+
+<body>
+
+<div style="width:100%;height:5%;float:center">
+  <form style="text-align:center">
+  
+		..O.Ov..<input type="text" align="center" name="englishWord" onKeyPress="if(event.keyCode== 13) { OnFindIt(this.form);  return false;}"/>
+	               <input type="button" value="Find It" onclick="OnFindIt(this.form)"/>
+
+ </form>
+</div>
+
+<!-- 
+     http://dic.daum.net/search.do?q=stiff&dic=eng&search_first=Y 
+     http://www.bing.com/images/search?q=southpark 
+-->
+
+<div style="width:50%;height:45%;float:left">
+<iframe src="http://dic.daum.net/index.do?dic=eng" style="border:0px #FFFFFF none;" id="daum_dic" scrolling="yes" frameborder="0"  marginheight="0px" overflow-x:auto overflow-y:auto marginwidth="0px" height="100%" width="100%">
+</iframe>
+</div>
+
+<div style="width:50%;height:45%;float:right">
+<iframe src="http://www.oxforddictionaries.com/definition/english/" style="border:0px #FFFFFF none;" id="oxford_dic" scrolling="naver_dic" frameborder="0" marginheight="0px" marginwidth="0px" overflow-x:auto overflow-y:auto height="100%" width="100%">
+</iframe>
+</div>
+
+<div style="width:100%;height:50%;float:center">
+<iframe src="http://www.bing.com/?scope=images&FORM=Z9LH1" style="border:0px #FFFFFF none;" id="bing_image" scrolling="yes" frameborder="0" marginheight="0px" marginwidth="0px" overflow-x:auto overflow-y:auto height="100%" width="100%">
+</iframe>
+</div>
+
+
+</body>
+</html>

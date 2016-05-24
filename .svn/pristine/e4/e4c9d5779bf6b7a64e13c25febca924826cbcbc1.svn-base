@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">한영이 사전</string>
+    <color name="search_bg">#3366FF</color>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

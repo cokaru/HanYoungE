@@ -1,0 +1,241 @@
+package com.cokaru.multidic.multidic;
+
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+
+
+import com.cokaru.multidic.multidic.view.SlidingTabLayout;
+
+import java.util.HashMap;
+
+public class MainActivity extends AppCompatActivity
+{
+    public enum eSearchType
+    {
+        SEARCH_TYPE_KOREAN,
+        SEARCH_TYPE_ENGLISH,
+        SEARCH_TYPE_IMAGES,
+        SEARCH_TYPE_HISTORY;
+
+        public static eSearchType fromInteger(int _value)
+        {
+            switch (_value)
+            {
+                case 0: return SEARCH_TYPE_KOREAN;
+                case 1: return SEARCH_TYPE_ENGLISH;
+                case 2: return SEARCH_TYPE_IMAGES;
+                case 3: return SEARCH_TYPE_HISTORY;
+            }
+
+            return SEARCH_TYPE_KOREAN;
+        }
+    }
+
+    private SlidingTabLayout slidingTabLayout;
+    private ViewPager viewPager;
+    private DictionaryPagerAdapter dictionaryPagerAdapter;
+    private static final int MAX_SEARCH_TYPE_COUNT = 4;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        viewPager = (ViewPager)findViewById(R.id.viewpager);
+        dictionaryPagerAdapter = new DictionaryPagerAdapter(getSupportFragmentManager(),this.getBaseContext());
+      //  dictionaryPagerAdapter.addFragments();
+        viewPager.setAdapter(dictionaryPagerAdapter);
+       // viewPager.setCurrentItem(0);
+
+        slidingTabLayout = (SlidingTabLayout)findViewById(R.id.sliding_tabs);
+        slidingTabLayout.setViewPager(viewPager);
+
+        EditText editText = (EditText)findViewById(R.id.searchEditText);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId)
+                {
+                    case EditorInfo.IME_ACTION_SEARCH:
+                    {
+                        String _word = v.getText().toString();
+                        if(!_word.isEmpty())
+                        {
+                            Log.d("_page_", Integer.toString(viewPager.getCurrentItem()));
+                            //viewPager.removeAllViews();
+
+                            viewPager.setAdapter(null);
+
+                            dictionaryPagerAdapter.setSearchWord(_word);
+                            WebViewFragment fragment = null;
+                            fragment = (WebViewFragment)dictionaryPagerAdapter.getItem(0);
+//                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+  //                          transaction.replace(R)
+                            fragment.updateWebView( _word );
+
+                            fragment = (WebViewFragment)dictionaryPagerAdapter.getItem(1);
+                            fragment.updateWebView(_word);
+
+                            fragment = (WebViewFragment)dictionaryPagerAdapter.getItem(2);
+                            fragment.updateWebView(_word);
+
+                            fragment = (WebViewFragment)dictionaryPagerAdapter.getItem(3);
+                            fragment.updateWebView(_word);
+
+                            viewPager.setAdapter(dictionaryPagerAdapter);
+
+                           // WebViewFragment page = (WebViewFragment) dictionaryPagerAdapter.getItem(viewPager.getCurrentItem());
+                            //dictionaryPagerAdapter.setSearchWord(_word, viewPager.getCurrentItem());
+                            viewPager.setCurrentItem(viewPager.getCurrentItem());
+                            viewPager.getAdapter().notifyDataSetChanged();
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+
+    public static class DictionaryPagerAdapter extends FragmentPagerAdapter
+    {
+
+        private String  searchWord = "placebo";
+        private Context mainContext;
+        private HashMap<Integer,WebViewFragment> hashMap =  new HashMap<Integer,WebViewFragment>();
+
+        private WebViewFragment currentFragment = null;
+
+        public DictionaryPagerAdapter(FragmentManager _fragMgr,Context _context)
+        {
+            super(_fragMgr);
+            mainContext = _context;
+        }
+
+        @Override
+        public int getCount()
+        {
+            return MAX_SEARCH_TYPE_COUNT ;
+        }
+
+        public void addFragments()
+        {
+
+            hashMap.clear();
+
+            WebViewFragment fragment =null;
+
+            fragment = new WebViewFragment();
+            fragment.initialize(0, mainContext.getResources().getString(R.string.daum_dic_url),searchWord);
+            hashMap.put(0, fragment);
+
+            fragment = new WebViewFragment();
+            fragment.initialize(1, mainContext.getResources().getString(R.string.oxford_dic_url),searchWord);
+            hashMap.put(1, fragment);
+
+            fragment = new WebViewFragment();
+            fragment.initialize(2, mainContext.getResources().getString(R.string.bing_img_url),searchWord);
+            hashMap.put(2, fragment);
+
+            fragment = new WebViewFragment();
+            fragment.initialize(3, mainContext.getResources().getString(R.string.google_url),searchWord);
+            hashMap.put(3, fragment);
+
+        }
+
+        public Fragment getItem(int position) {
+            Log.d("_page_getItem_", Integer.toString(position));
+           // addFragments();
+           // WebViewFragment fragment =null;
+            switch (position)
+            {
+                case 0:
+                    currentFragment = WebViewFragment.newInstance(0, mainContext.getResources().getString(R.string.daum_dic_url),searchWord);
+                    currentFragment.initialize(0, mainContext.getResources().getString(R.string.daum_dic_url),searchWord);
+                    break;
+                case 1:
+                    currentFragment = WebViewFragment.newInstance(1, mainContext.getResources().getString(R.string.oxford_dic_url),searchWord);
+                    currentFragment.initialize(1, mainContext.getResources().getString(R.string.oxford_dic_url),searchWord);
+                    break;
+                case 2:
+                    currentFragment = WebViewFragment.newInstance(2, mainContext.getResources().getString(R.string.bing_img_url),searchWord);
+                    currentFragment.initialize(2, mainContext.getResources().getString(R.string.bing_img_url), searchWord);
+                    break;
+                case 3:
+                    currentFragment = WebViewFragment.newInstance(3, mainContext.getResources().getString(R.string.google_url),searchWord);
+                    currentFragment.initialize(3, mainContext.getResources().getString(R.string.google_url), searchWord);
+                    break;
+            }
+
+            return currentFragment;
+        }
+
+
+        public int getItemPosition(Object object)
+        {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position)
+        {
+            eSearchType searchType  =  eSearchType.fromInteger(position);
+            switch (searchType)
+            {
+                case SEARCH_TYPE_KOREAN:    return "한글로";
+                case SEARCH_TYPE_ENGLISH:   return "영어로";
+                case SEARCH_TYPE_IMAGES:    return "이미지로";
+                case SEARCH_TYPE_HISTORY:   return "끄적끄적";
+            }
+            return null;
+        }
+
+      //  public WebViewFragment getCurrentFragment()
+      //  {
+       //     return currentFragment;
+//
+
+
+        @Override
+        public boolean isViewFromObject(View pager,Object obj)
+        {
+            return pager == obj;
+        }
+
+
+        public void setSearchWord(String _word)
+        {
+            searchWord = _word;
+        }
+
+        public void setSearchWord(String _word,int index )
+        {
+
+            searchWord = _word;
+
+            //WebViewFragment _fragment = hashMap.get(index);
+
+            if(currentFragment != null)
+            {
+                Log.d("_page_setSearchWord", Integer.toString(index));
+                currentFragment.updateWebView(searchWord);
+            }
+        }
+    }
+}

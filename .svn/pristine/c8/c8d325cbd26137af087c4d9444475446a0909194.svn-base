@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">한영이 사전</string>
+    <color name="search_bg">#3366FF</color>
+
+    <string name="daum_dic_url">http://dic.daum.net/search.do?q=</string>
+    <string name="oxford_dic_url">http://www.oxforddictionaries.com/definition/english/</string>
+    <string name="bing_img_url">http://www.bing.com/images/search?q=</string>
+    <string name="google_url">http://www.google.com/</string>
+
+
+
+</resources>
